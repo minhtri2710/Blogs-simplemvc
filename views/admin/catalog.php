@@ -1,7 +1,7 @@
         <div id="page-wrapper">
             <div class="row">
-                <div class="col-lg-10">
-                    <h1 class="page-header">Bảng Catalog</h1>
+                <div class="col-lg-12">
+                    <h1 class="page-header">Bảng Danh Mục</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -88,13 +88,6 @@
                                 <label class='control-label col-sm-3 col-md-2' for='selCatalog'>Con Của</label>
                                 <div class="col-sm-9 col-md-10">
                                     <select class="form-control" name='selCatalog' id="selCatalog">
-                                        <?php if (isset($data_sub)): ?>
-                                            <?php foreach ($data_sub as $key => $value): ?>
-                                                <option value="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></option>
-                                            <?php endforeach ?>
-                                        <?php else: ?>
-                                            <option value="0">Danh Mục Đầu</option>
-                                        <?php endif ?>
                                     </select>
                                 </div>
                             </div>

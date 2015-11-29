@@ -51,6 +51,14 @@
             </div>
             <!--widget-content--> 
           </div>
+          <div class="popular-posts widget widget_categories" id="categories-2">
+            <h3 class="widget-title">Tag</h3>
+            <ul>
+            <?php foreach ($tag as $key => $value): ?>
+              <li><a href="index.php?c=blog&m=detail&id=<?php echo $value['post_id']; ?>">#<?php echo $value['name'] ?></a></li>
+            <?php endforeach ?>
+            </ul>
+          </div>
         </div>
         </aside>
     </div>

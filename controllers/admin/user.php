@@ -12,8 +12,8 @@ function user_delete(){
 	{
 		$id=$_POST['id'];
 		if(count(model('user')->all())>1){
-			$bool=model('user')->delete($id);
-			get_json_ajax();
+			if(model('user')->delete($id)!=0)
+				get_json_ajax();
 		}
 	}
 }
@@ -23,18 +23,20 @@ function user_insert(){
 		$insert_data = array(
 	                'name' => $_POST['txtName'],
 	                'username' => $_POST['txtUser'],
-	                'password' => $_POST['txtPass'],
+	                'password' => md5(md5($_POST['txtPass'].'tri').'minh'),
 	            );
-		$id_insert=model('user')->insert($insert_data);
-		get_json_ajax();
+		if(model('user')->insert($insert_data)!=0)
+			get_json_ajax();
 	}
 }
 function user_select(){
 	if(isset($_POST['id']))
 	{
 		$data=model('user')->getOneBy($_POST['id']);
-		echo json_encode(array('data'=>$data));
-		die();
+		if($data){
+			echo json_encode(array('data'=>$data));
+			die();
+		}
 	}
 }
 function user_update(){
@@ -45,8 +47,8 @@ function user_update(){
 	            'username' => $_POST['txtUser'],
 	            'password' => $_POST['txtPass'],
             );
-		$update=model('user')->update($update_data,$_POST['id']);
-		get_json_ajax();
+		if(model('user')->update($update_data,$_POST['id'])!=0)
+			get_json_ajax();
 	}
 }
 function get_json_ajax(){

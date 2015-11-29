@@ -4,7 +4,7 @@ class Product extends Model {
     public $table = 'product';
     public $primary_key = 'id';
     function delete($id){
-    	return db_delete($this->table,$this->primary_key."=".$id);
+    	return db_delete($this->table,$this->primary_key."=".esc($id));
     }
     function get_product($where=''){
         $sql = "SELECT p.*,c.name as catalog FROM `{$this->table}` p LEFT JOIN catalog c ON p.catalog_id=c.id ".$where;
@@ -18,6 +18,6 @@ class Product extends Model {
     	return db_insert($this->table, $data);
     }
     function update($data,$id){
-    	return db_update($this->table, $data,$this->primary_key."=".$id);
+    	return db_update($this->table, $data,$this->primary_key."=".esc($id));
     }
 }

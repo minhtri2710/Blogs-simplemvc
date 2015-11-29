@@ -42,4 +42,4 @@ if(!empty($_SESSION['name'])){
         die();
     }
 }
-else header('Location: http://simplemvc.vn:3030/');
+else header('Location: /index.php');

@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-main col-sm-9">
           <div class="page-title">
-            <h2>Bài Viết</h2>
+            <h2><?php echo $title; ?></h2>
           </div>
           <div class="blog-wrapper" id="main">
             <div class="site-content" id="primary">

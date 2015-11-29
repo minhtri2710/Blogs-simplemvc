@@ -28,6 +28,7 @@
                                             <th>ID</th>
                                             <th>Tiêu Đề</th>
                                             <th>Giới Thiệu</th>
+                                            <th>Thể Loại</th>
                                             <th>Ảnh</th>
                                             <th>Ngày Tạo</th>
                                             <th>Người Tạo</th>
@@ -40,6 +41,7 @@
                                                 <td><?php echo $value['id']; ?></td>
                                                 <td><?php echo $value['title']; ?></td>
                                                 <td><?php echo $value['description']; ?></td>
+                                                <td><?php echo $value['catalog_name']; ?></td>
                                                 <td align="center"><img width="70px" height="70px" src="images/<?php echo $value['url_image']; ?>" alt=""></td>
                                                 <td><?php echo $value['created']; ?></td>
                                                 <td><?php echo $value['name']; ?></td>
@@ -90,6 +92,16 @@
                             <label class="control-label col-sm-3 col-md-2" for="editor">Nội dung</label>
                             <div class="col-sm-9 col-md-10">
                                 <textarea class="form-control" name='editor' id="editor"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class='control-label col-sm-3 col-md-2' for='selCatalog'>Loại Bài Viết</label>
+                            <div class="col-sm-9 col-md-10">
+                                <select class="form-control" name='selCatalog' id="selCatalog">
+                                   <?php foreach ($catalog as $key => $value): ?>
+                                    <option value="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></option>
+                                   <?php endforeach ?>
+                                </select>
                             </div>
                         </div>
                          <div class="form-group">

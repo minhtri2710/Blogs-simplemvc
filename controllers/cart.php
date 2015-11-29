@@ -11,9 +11,9 @@
 			$_SESSION['total']=0;
 		if(empty($_SESSION['total_qty']))
 			$_SESSION['total_qty']=0;
-	    if(isset($_POST['id'])){
+	    if(!empty($_POST['id'])){
 	    	$id=$_POST['id'];
-	    	$qty=isset($_POST['qty'])?$_POST['qty']:1;
+	    	$qty=!empty($_POST['qty'])?$_POST['qty']:1;
 	    	if(empty($_SESSION['cart'][$id])){
 	    		$product=model('product')->getOneBy($id);
 		    	$_SESSION['cart'][$id]['name']=$product['name'];
@@ -40,9 +40,9 @@
 	    $_SESSION['total_qty']=0;
 	    $_SESSION['total']=0;
 	    foreach ($_POST['txtQty'] as $key => $value) {
-	    	$_SESSION['cart'][$key]['qty']=$value;
+	    	$_SESSION['cart'][$key]['qty']=abs($value)?:1;
 	    	$_SESSION['cart'][$key]['subtotal']=$_SESSION['cart'][$key]['price']*$_SESSION['cart'][$key]['qty'];
-	    	$_SESSION['total_qty']+=$value;
+	    	$_SESSION['total_qty']+=abs($value);
 	    	$_SESSION['total']+=$_SESSION['cart'][$key]['subtotal'];
 	    }
 	    get_json_ajax();
@@ -51,7 +51,7 @@
 		$data = array();
 	    $data['template_file'] = 'index/cart.php';
 	    $data['title']='Giỏ Hàng';
-	    if(isset($_POST['id'])){
+	    if(!empty($_POST['id'])){
 	    	$_SESSION['total_qty']-=$_SESSION['cart'][$_POST['id']]['qty'];
 	    	$_SESSION['total']-=$_SESSION['cart'][$_POST['id']]['subtotal'];
 	    	unset($_SESSION['cart'][$_POST['id']]);
@@ -59,16 +59,13 @@
 	    }
 	}
 	function cart_delete_all(){
-		$data = array();
-	    $data['template_file'] = 'index/cart.php';
-	    $data['title']='Giỏ Hàng';
+		unset($_SESSION['cart']);
     	unset($_SESSION['total_qty']);
-    	unset($_SESSION['total']);
-    	unset($_SESSION['cart']);
-    	get_json_ajax();
+		unset($_SESSION['total']);
+		get_json_ajax();
 	}
 	function cart_add_order(){
-		if(isset($_POST['submit'])){
+		if(!empty($_POST['submit'])){
 			$trans_data = array(
 	                'user_name' => $_POST['txtName'],
 	                'user_email' => $_POST['txtEmail'],
@@ -79,13 +76,15 @@
 	            );
 			$id_trans=model('transaction')->insert($trans_data);
 			foreach ($_SESSION['cart'] as $key => $value) {
-				$order_data = array(
-	                'transaction_id' => $id_trans,
-	                'product_id' => $key,
-	                'qty' => $value['qty'],
-	                'amount' => $value['subtotal'],
-	            );
-				$id_order=model('order')->insert($order_data);
+				if($value['qty']){
+					$order_data = array(
+		                'transaction_id' => $id_trans,
+		                'product_id' => $key,
+		                'qty' => $value['qty'],
+		                'amount' => $value['subtotal'],
+		            );
+					$id_order=model('order')->insert($order_data);
+				}
 			}
 			unset($_SESSION['total_qty']);
 	    	unset($_SESSION['total']);

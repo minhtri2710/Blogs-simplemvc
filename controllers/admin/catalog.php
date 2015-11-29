@@ -11,8 +11,8 @@ function catalog_delete(){
 	if(isset($_POST['id']))
 	{
 		$id=$_POST['id'];
-		$bool=model('catalog')->delete($id);
-		get_json_ajax();
+		if(model('catalog')->delete($id)!=0);
+			get_json_ajax();
 	}
 }
 function catalog_insert(){
@@ -23,25 +23,29 @@ function catalog_insert(){
 	                'parent_id' => $_POST['selCatalog'],
 	                'level' => $_POST['selLevel'],
 	            );
-		$id_insert=model('catalog')->insert($insert_data);
-		get_json_ajax();
+		//FASLE nếu lỗi
+		if(model('catalog')->insert($insert_data)!=0);
+			get_json_ajax();
 	}
 }
 function catalog_select(){
 	if(isset($_POST['id']))
 	{
+		//FASLE nếu lỗi
 		$data=model('catalog')->getOneBy($_POST['id']);
-		$catalog=array();
-		if(($data['level']-1)==-1)
-		{
-			$catalog['data_sub']=array(array('id'=>0,'name'=>'Danh Mục Cha'));
+		if($data){
+			$catalog=array();
+			if(($data['level']-1)==-1)
+			{
+				$catalog['data_sub']=array(array('id'=>0,'name'=>'Danh Mục Cha'));
+			}
+			else $catalog['data_sub']=model('catalog')->catalog('WHERE level='.($data['level']-1));
+			ob_start();
+			render('admin/catalog_level.php', $catalog);
+			$string = ob_get_clean();
+			echo json_encode(array('data'=>$data,'data_catalog'=>$string));
+			die();
 		}
-		else $catalog['data_sub']=model('catalog')->catalog('WHERE level='.($data['level']-1));
-		ob_start();
-		render('admin/catalog_level.php', $catalog);
-		$string = ob_get_clean();
-		echo json_encode(array('data'=>$data,'data_catalog'=>$string));
-		die();
 	}
 }
 function catalog_select_level(){
@@ -49,17 +53,19 @@ function catalog_select_level(){
 	{
 		if(($_POST['id']-1)==-1)
 		{
-			$data=array(array('id'=>0,'name'=>'Danh Mục Cha'));
+			$data_sub=array(array('id'=>0,'name'=>'Danh Mục Cha'));
 		}
-		else $data=model('catalog')->catalog('WHERE level='.($_POST['id']-1));
-
-		$catalog=array();
-		$catalog['data_sub']=$data;
-	    ob_start();
-		render('admin/catalog_level.php', $catalog);
-		$string = ob_get_clean();
-		echo json_encode(array('data'=>$string));
-		die();
+		else $data_sub=model('catalog')->catalog('WHERE level='.($_POST['id']-1));
+		if(isset($data_sub[0]))
+		{
+			$catalog=array();
+			$catalog['data_sub']=$data_sub;
+		    ob_start();
+			render('admin/catalog_level.php', $catalog);
+			$string = ob_get_clean();
+			echo json_encode(array('data'=>$string));
+			die();
+		}
 	}
 }
 function catalog_update(){
@@ -70,14 +76,15 @@ function catalog_update(){
                 'parent_id' => $_POST['selCatalog'],
                 'level' => $_POST['selLevel'],
             );
-		$update=model('catalog')->update($update_data,$_POST['id']);
-		get_json_ajax();
+		//FASLE nếu lỗi
+		if(model('catalog')->update($update_data,$_POST['id'])!=0)
+			get_json_ajax();
 	}
 }
 function get_json_ajax(){
 	$data=array();
 	$data['data']=model('catalog')->catalog();
-    ob_start();
+	ob_start();
 	render('admin/catalog.php', $data);
 	$string = ob_get_clean();
 	echo json_encode(array('data'=>$string));

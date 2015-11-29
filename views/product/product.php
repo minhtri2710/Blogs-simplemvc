@@ -5,13 +5,15 @@
         <div class="col-xs-12">
           <ul>
             <li class="home"> <a title="Đến Trang Chủ" href="index.php">Trang Chủ</a><span>» </span></li>
-            <?php if (isset($catalog)): ?>
+            <?php if (!empty($catalog)): ?>
               <?php if ($catalog[0]['parent_id']!=0): ?>
                 <li class=""> <a title="Đến trang <?php echo $catalog[0]['name_parent']; ?>" href="index.php?c=product&id=<?php echo $catalog[0]['parent_id']; ?>"><?php echo $catalog[0]['name_parent']; ?></a><span>» </span></li>
+                <li class="category13"><strong><?php echo $catalog[0]['name']; ?></strong></li>
+              <?php else: ?>
+                <li class="category13"><strong><?php echo $catalog[0]['name']; ?></strong></li>
               <?php endif ?>
-              <li class="category13"><strong><?php echo $catalog[0]['name']; ?></strong></li>
             <?php else: ?>
-              <li class="category13"><strong>Sản Phẩm</strong></li>
+                <li class="category13"><strong>Sản Phẩm</strong></li>
             <?php endif ?>
           </ul>
         </div>
@@ -25,7 +27,7 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-12">
-          <h2><?php echo $catalog[0]['name']; ?></h2>
+          <h2><?php echo !empty($catalog)?$catalog[0]['name']:'Sản Phẩm'; ?></h2>
         </div>
       </div>
     </div>
@@ -115,7 +117,7 @@
                   <?php $menu=model('catalog')->catalog('WHERE parent_id=0');
                         foreach ($menu as $key => $value):
                   ?>
-                    <li> <a class="active" href="index.php?c=product&id=<?php echo $value['id']; ?>"><?php echo $value['name']; ?></a> <span class="subDropdown minus"></span>
+                    <li> <a <?php if(!empty($_GET['id'])) echo $value['id']==$_GET['id']?'class="active"':''; ?> href="index.php?c=product&id=<?php echo $value['id']; ?>"><?php echo $value['name']; ?></a> <span <?php if(!empty($_GET['id'])) echo $value['id']==$_GET['id']?'class="subDropdown minus"':'class="subDropdown plus"'; else echo 'class="subDropdown plus"'; ?> ></span>
                       <ul class="level0_415" style="display:block">
                         <?php $menu=model('catalog')->catalog('WHERE parent_id='.$value['id']);
                           foreach ($menu as $key => $value):

@@ -3,7 +3,7 @@
 function login_index() {
     $data = array();
     $data['template_file'] = 'index/login.php';
-    $data['title']='Login';
+    $data['title']='Đăng Nhập';
     $data['error']='';
     render('layout_home.php', $data);
 }
@@ -12,7 +12,7 @@ function login_login(){
 		$error='';
 		$user=model('user')->getOneBy($_POST['user'],'username');
 		if($user){
-			if($user['password']!=$_POST['pass'])
+			if($user['password']!=md5(md5($_POST['pass'].'tri').'minh'))
 			{
 				$error='<p class="required">*Sai Password</p>';
 			}
@@ -24,11 +24,11 @@ function login_login(){
 			$_SESSION['name']=$user['name'];
 			$_SESSION['id']=$user['id'];
 			$_SESSION['username']=$user['username'];
-			header('Location: http://simplemvc.vn:3030/admin.php');
+			header('Location:/admin.php');
 		}
 		else{
 			$data['template_file'] = 'index/login.php';
-		    $data['title']='Login';
+		    $data['title']='Đăng Nhập';
 		    $data['error']=$error;
 		    render('layout_home.php', $data);
 		}

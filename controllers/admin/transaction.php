@@ -11,8 +11,8 @@ function transaction_delete(){
 	if(isset($_POST['id']))
 	{
 		$id=$_POST['id'];
-		$bool=model('transaction')->delete($id);
-		get_json_ajax();
+		if(model('transaction')->delete($id)!=0)
+			get_json_ajax();
 	}
 }
 function transaction_select(){
@@ -20,11 +20,13 @@ function transaction_select(){
 	{
 		$data=array();
 		$data['data_order']=model('order')->getorder_byIdtran($_POST['id']);
-	    ob_start();
-		render('admin/transaction_detail.php', $data);
-		$string = ob_get_clean();
-		echo json_encode(array('data'=>$string));
-		die();
+		if(isset($data['data_order'])){
+		    ob_start();
+			render('admin/transaction_detail.php', $data);
+			$string = ob_get_clean();
+			echo json_encode(array('data'=>$string));
+			die();
+		}
 	}
 }
 function transaction_update(){
@@ -33,8 +35,8 @@ function transaction_update(){
 		$update_data = array(
                 'status' => 1,
             );
-		$update=model('transaction')->update($update_data,$_POST['id']);
-		get_json_ajax();
+		if(model('transaction')->update($update_data,$_POST['id'])!=0);
+			get_json_ajax();
 	}
 }
 function get_json_ajax(){

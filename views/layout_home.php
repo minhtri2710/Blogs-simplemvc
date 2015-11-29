@@ -73,9 +73,11 @@
             </div>
             <!-- Search-col -->
             <div class="search-box pull-right">
-              <form action="http://htmldemo.magikcommerce.com/ecommerce/classic-html-template/version_3/cat" method="POST" id="search_mini_form" name="Categories">
-                <input type="text" placeholder="Search entire store here..." maxlength="70" name="search" id="search">
-                <button type="button" class="search-btn-bg"><span class="glyphicon glyphicon-search"></span>&nbsp;</button>
+              <form action="index.php" method="GET" id="search_mini_form" name="Categories">
+                <input type="hidden" name="c" value="product">
+                <input type="hidden" name="m" value="search">
+                <input type="text" placeholder="Tìm sản phẩm..." maxlength="70" name="sr" id="search">
+                <button type="submit" class="search-btn-bg"><span class="glyphicon glyphicon-search"></span>&nbsp;</button>
               </form>
             </div>
             <!-- End Search-col -->
@@ -94,11 +96,11 @@
       <div class="row">
         <div class="nav-inner col-lg-12">
           <ul id="nav" class="hidden-xs">
-            <li class="level0 parent drop-menu active"><a href="index.php"><span>Trang chủ</span></a></li>
+            <li class="level0 parent drop-menu <?php if(empty($_GET['id'])) echo 'active'; ?>"><a href="index.php"><span>Trang chủ</span></a></li>
             <?php $menu=model('catalog')->catalog('WHERE parent_id=0');
                   foreach ($menu as $key => $value):
             ?>
-              <li class="mega-menu"><a href="index.php?c=product&id=<?php echo $value['id']; ?>" class="level-top"><span><?php echo $value['name']; ?></span></a>
+              <li class="mega-menu <?php if(!empty($_GET['id'])) echo $value['id']==$_GET['id']?'active':''; ?>"><a href="index.php?c=product&id=<?php echo $value['id']; ?>" class="level-top"><span><?php echo $value['name']; ?></span></a>
                 <div  style="left: 0px; display: none;" class="level0-wrapper dropdown-6col">
                   <div class="container">
                     <div class="level0-wrapper2">
@@ -126,7 +128,37 @@
                 </div>
               </li>
             <?php endforeach ?>
-            <li class="mega-menu"><a href="index.php?c=blog" class="level-top"><span>Bài Viết</span></a>
+            <?php $menu=model('blog_catalog')->catalog('WHERE parent_id=0');
+                  foreach ($menu as $key => $value):
+            ?>
+              <li class="mega-menu <?php if(!empty($_GET['id'])) echo $value['id']==$_GET['id']?'active':''; ?>"><a href="index.php?c=blog&id=<?php echo $value['id']; ?>" class="level-top"><span><?php echo $value['name']; ?></span></a>
+                <div  style="left: 0px; display: none;" class="level0-wrapper dropdown-6col">
+                  <div class="container">
+                    <div class="level0-wrapper2">
+                      <div class="nav-block nav-block-center">
+                        <ul class="level0">
+                          <?php
+                                $menu=model('blog_catalog')->catalog('WHERE parent_id='.$value['id']);
+                                foreach ($menu as $key => $value): 
+                          ?>
+                            <li class="level1 nav-6-1 parent item"><a href="index.php?c=blog&id=<?php echo $value['id']; ?>" class=""><span><?php echo $value['name']; ?></span></a>
+                              <ul class="level1">
+                              <?php
+                                $menu=model('blog_catalog')->catalog('WHERE parent_id='.$value['id']);
+                                foreach ($menu as $key => $value): 
+                              ?>
+                                <li class="level2 nav-6-1-1"><a href="index.php?c=blog&id=<?php echo $value['id']; ?>"><span><?php echo $value['name']; ?></span></a></li>
+                              <?php endforeach ?>
+                              </ul>
+                            </li>
+                          <?php endforeach ?>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            <?php endforeach ?>
             </li>
           </ul>
           <div class="menu_top">
@@ -331,14 +363,14 @@
 <!-- End Footer --> 
 <!-- JavaScript --> 
 <script type="text/javascript" src="./styles/js/jquery.min.js"></script> 
-<script type="text/javascript" src="./styles/js/bootstrap.min.js"></script> 
-<script type="text/javascript" src="./styles/js/parallax.js"></script> 
+<script type="text/javascript" src="./styles/js/bootstrap.min.js"></script>s
 <script type="text/javascript" src="./styles/js/revslider.js"></script> 
 <script type="text/javascript" src="./styles/js/common.js"></script>
 <script type="text/javascript" src="./styles/js/jquery.flexslider.js"></script> 
 <script type="text/javascript" src="./styles/js/owl.carousel.min.js"></script>
 <script type="text/javascript" src="./styles/js/cloud-zoom.js"></script> 
 <script type="text/javascript" src="./styles/js/jquery.mobile-menu.min.js"></script>
+<script type="text/javascript" src="./styles/js/myjs.js"></script>
 <!-- Validate -->
 <script src="./styles/js/jquery.validate.min.js"></script>
 <script src="./styles/js/additional-methods.min.js"></script>
@@ -415,321 +447,6 @@ fullScreenOffsetContainer: ''
 });
 
 </script>
-<script>
-  $(document).ready(function() {
-      $.validator.addMethod("onechar", function(value, element) {
-        return this.optional( element ) || /(?!^[0-9]*$)^([a-zA-Z0-9_aáàảãạăắằẳẵặâấầẩẫậeéèẻẽẹêếềểễệiíìỉĩịoóòỏõọôốồổỗộơớờởỡợuúùủũụưứừửữựyýỳỷỹỵdđAÁÀẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬEÉÈẺẼẸÊẾỀỂỄỆIÍÌỈĨỊOÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢUÚÙỦŨỤƯỨỪỬỮỰYÝỲỶỸỴDĐ\s\.\/\,]+)$/.test( value );
-      }, 'Có ít nhất một ký tự chữ cái');
-
-      $('#ajax_table').on('submit','#form-add',function(e){
-            e.preventDefault();
-            var dataform = new FormData(this);
-            $.ajax({
-                url:window.location.origin+window.location.pathname,
-                type:'post',
-                data:dataform,
-                dataType:'json',
-                cache: false,
-                contentType: false,
-                processData: false,
-                enctype: "multipart/form-data",
-                success:function(json){
-                  $(document).find('.mini-cart').html(json.data_mini);
-                  switch(window.location.search.split('=')[1]) {
-                      case 'cart':
-                          $('#ajax_table').html(json.data);
-                          $('#form-info-transaction').info_transaction();
-                          break;
-                  }
-                },
-                error : function(xhr, status,error){
-                    console.log("Loi " + error + " thi mot fix sau");
-                }
-            });
-        });
-        $('#ajax_table').on('submit','#product_addtocart_form',function(e){
-            e.preventDefault();
-            var dataform = new FormData(this);
-            dataform.append('c','cart');
-            dataform.append('m','add');
-            $.ajax({
-                url:window.location.origin+window.location.pathname,
-                type:'post',
-                data:dataform,
-                dataType:'json',
-                cache: false,
-                contentType: false,
-                processData: false,
-                enctype: "multipart/form-data",
-                success:function(json){
-                  $(document).find('.mini-cart').html(json.data_mini);
-                  switch(window.location.search.split('=')[1]) {
-                      case 'cart':
-                          $('#ajax_table').html(json.data);
-                          $('#form-info-transaction').info_transaction();
-                          break;
-                  }
-                },
-                error : function(xhr, status,error){
-                    console.log("Loi " + error + " thi mot fix sau");
-                }
-            });
-        });
-        $(document).on('submit','#form-del',function(e){
-            e.preventDefault();
-            var dataform = new FormData(this);
-            if(confirm('Bạn có muốn xóa')){
-              $.ajax({
-                  url:window.location.origin+window.location.pathname,
-                  type:'post',
-                  data:dataform,
-                  dataType:'json',
-                  cache: false,
-                  contentType: false,
-                  processData: false,
-                  enctype: "multipart/form-data",
-                  success:function(json){
-                    $(document).find('.mini-cart').html(json.data_mini);
-                    switch(window.location.search.split('=')[1]) {
-                        case 'cart':
-                            $('#ajax_table').html(json.data);
-                            $('#form-info-transaction').info_transaction();
-                            break;
-                    }
-                  },
-                  error : function(xhr, status,error){
-                      console.log("Loi " + error + " thi mot fix sau");
-                  }
-              });
-            }
-        });
-        $('#ajax_table').on('submit','#form-update',function(e){
-            e.preventDefault();
-            var dataform = new FormData(this);
-            $.ajax({
-                url:window.location.origin+window.location.pathname,
-                type:'post',
-                data:dataform,
-                dataType:'json',
-                cache: false,
-                contentType: false,
-                processData: false,
-                enctype: "multipart/form-data",
-                success:function(json){
-                  $(document).find('.mini-cart').html(json.data_mini);
-                  switch(window.location.search.split('=')[1]) {
-                      case 'cart':
-                          $('#ajax_table').html(json.data);
-                          $('#form-info-transaction').info_transaction();
-                          break;
-                  }
-                },
-                error : function(xhr, status,error){
-                    console.log("Loi " + error + " thi mot fix sau");
-                }
-            });
-        });
-        $('#ajax_table').on('submit','#form-info-transaction',function(e){
-            e.preventDefault();
-            var dataform = new FormData(this);
-            dataform.append('c','cart');
-            dataform.append('m','add_order')
-            $.ajax({
-                url:window.location.origin+window.location.pathname,
-                type:'post',
-                data:dataform,
-                dataType:'text',
-                cache: false,
-                contentType: false,
-                processData: false,
-                enctype: "multipart/form-data",
-                success:function(){
-                  window.location.href='index.php';
-                },
-                error : function(xhr, status,error){
-                    console.log("Loi " + error + " thi mot fix sau");
-                }
-            });
-        });
-        $('#ajax_table').on('click','#empty_cart_button',function(e){
-            var dataform = new FormData();
-            dataform.append('c','cart');
-            dataform.append('m','delete_all');
-            if(confirm('Bạn có muốn xóa')){
-              $.ajax({
-                  url:window.location.origin+window.location.pathname,
-                  type:'post',
-                  data:dataform,
-                  dataType:'json',
-                  cache: false,
-                  contentType: false,
-                  processData: false,
-                  enctype: "multipart/form-data",
-                  success:function(json){
-                    $(document).find('.mini-cart').html(json.data_mini);
-                    switch(window.location.search.split('=')[1]) {
-                        case 'cart':
-                            $('#ajax_table').html(json.data);
-                            $('#form-info-transaction').info_transaction();
-                            $
-                            break;
-                    }
-                  },
-                  error : function(xhr, status,error){
-                      console.log("Loi " + error + " thi mot fix sau");
-                  }
-              });
-            }
-        });
-        $('#ajax_table').on('click','#del',function(e){
-            var dataform = new FormData();
-            dataform.append('c','cart');
-            dataform.append('m','delete');
-            dataform.append('id',$('#ajax_table').find('#del').data('key'));
-            if(confirm('Bạn có muốn xóa')){
-              $.ajax({
-                  url:window.location.origin+window.location.pathname,
-                  type:'post',
-                  data:dataform,
-                  dataType:'json',
-                  cache: false,
-                  contentType: false,
-                  processData: false,
-                  enctype: "multipart/form-data",
-                  success:function(json){
-                    $(document).find('.mini-cart').html(json.data_mini);
-                    switch(window.location.search.split('=')[1]) {
-                        case 'cart':
-                            $('#ajax_table').html(json.data);
-                            $('#form-info-transaction').info_transaction();
-                            break;
-                    }
-                  },
-                  error : function(xhr, status,error){
-                      console.log("Loi " + error + " thi mot fix sau");
-                  }
-              });
-            }
-        });
-      $(document).find('#form-login').validate({
-          rules: {
-              user: {
-                  required: true,
-                  minlength: 4,
-                  onechar:true,
-              },
-              pass: {
-                  required: true,
-                  minlength: 6,
-              },
-          },
-          messages: {
-              user: {
-                  required: "Xin hãy user",
-                  minlength: "User ít nhất có 4 ký tự"
-              },
-              pass: {
-                  required: "Xin hãy pass",
-                  minlength: "Password ít nhất có 6 ký tự"
-              },
-          },
-          showErrors: function (errorMap, errorList) {
-              $.each(this.successList, function (index, value) {
-                  $('#'+value.id+'').parent().removeClass("has-error");
-                  $('#'+value.id+'').popover('destroy');
-              });
-              $.each(this.errorList, function (index, value) {
-                  $('#'+value.element.id+'').parent().addClass("has-error");
-                  $('#'+value.element.id+'').popover('destroy');
-                  $('#'+value.element.id+'').popover({
-                      content:value.message,
-                      template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>',
-                      placement: 'top',
-                      trigger: 'manual',
-                  }).popover('show');
-                  setTimeout(function(){ $('#'+value.element.id+'').popover('hide'); },2000);
-              });
-          }
-      });
-      $.fn.info_transaction=function(){
-        $(this).validate({
-          rules: {
-              txtName: {
-                  required: true,
-                  minlength: 4,
-                  onechar:true,
-              },
-              txtPhone: {
-                  required: true,
-                  minlength: 9,
-                  maxlength: 11,
-              },
-              txtEmail: {
-                  required: true,
-                  email:true,
-              },
-              txtAddress: {
-                  required: true,
-                  minlength: 20,
-                  onechar:true,
-              },
-          },
-          messages: {
-              txtName: {
-                  required: 'Xin Nhập Họ Tên',
-                  minlength: 'Có Ít Nhất 4 Ký Tự',
-                  onechar:'Có Ít Nhất 1 Ký Tự Chữ Cái',
-              },
-              txtPhone: {
-                  required: 'Xin Nhập Điện Thoại',
-                  minlength: 'Số Giới Hạn Từ 9-11',
-                  maxlength: 'Số Giới Hạn Từ 9-11',
-              },
-              txtEmail: {
-                  required: 'Xin Nhập Email',
-                  email:'Email Sai',
-              },
-              txtAddress: {
-                  required: 'Xin Nhập Địa Chỉ',
-                  minlength: 'Có Ít Nhất 20 Ký Tự',
-                  onechar:'Có Ít Nhất 1 Ký Tự Chữ Cái',
-              },
-          },
-          showErrors: function (errorMap, errorList) {
-              $.each(this.successList, function (index, value) {
-                  $('#'+value.id+'').parent().removeClass("has-error");
-                  $('#'+value.id+'').popover('destroy');
-              });
-              $.each(this.errorList, function (index, value) {
-                  $('#'+value.element.id+'').parent().addClass("has-error");
-                  $('#'+value.element.id+'').popover('destroy');
-                  $('#'+value.element.id+'').popover({
-                      content:value.message,
-                      template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>',
-                      placement: 'top',
-                      trigger: 'manual',
-                  }).popover('show');
-                  setTimeout(function(){ $('#'+value.element.id+'').popover('hide'); },2000);
-              });
-          }
-        });
-      };
-      $('#form-info-transaction').info_transaction();
-       $(window).resize(function() {
-          if($('.img_news').length)
-            $('.img_news').attr('height',$('.img_news').css('width').replace(/[^-\d\.]/g, '')*0.66);
-          if($('.item-img-info').length)
-            $('.item-img-info a.product-image img').attr('height',$('.item-img-info').css('width').replace(/[^-\d\.]/g, '')*1.22);
-        });
-       $.fn.img_resize=function(){
-          if($('.img_news').length)
-            $('.img_news').attr('height',$('.img_news').css('width').replace(/[^-\d\.]/g, '')*0.66);
-          if($('.item-img-info').length)
-            $('.item-img-info a.product-image img').attr('height',$('.item-img-info').css('width').replace(/[^-\d\.]/g, '')*1.22);
-        };
-        $('#ajax_table').img_resize();
-  });
-  </script>
 </body>
 
 </html>

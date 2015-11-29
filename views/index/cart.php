@@ -1,4 +1,4 @@
-  <section class="main-container col1-layout wow bounceInUp animated">
+<section class="main-container col1-layout wow bounceInUp animated">
     <div class="main container">
       <div class="col-main">
         <div class="cart">
@@ -8,8 +8,6 @@
             <?php if (!empty($_SESSION['cart'])): ?>
                 <div class="table-responsive">
                 <form id='form-update'>
-                    <input type="hidden" value="cart" name="c">
-                    <input type="hidden" value="update" name="m">
                     <fieldset>
                         <table class="data-table cart-table" id="shopping-cart-table">
                           <thead>
@@ -27,7 +25,7 @@
                                 <td class="a-right last" colspan="6">
                                     <button class="button btn-continue" onclick="window.location.href='index.php'" title="Tiếp Tục" type="button"><span>Tiếp Tục</span></button>
                                     <button class="button btn-update" title="Cập Nhật" value="update_cart" name="update_cart_action" type="submit"><span>Cập Nhật</span></button>
-                                    <button id="empty_cart_button" class="button" title="Xóa Giỏ Hàng"><span>Xóa Giỏ Hàng</span></button>
+                                    <button id="empty_cart_button" class="button" title="Xóa Giỏ Hàng" type="button"><span>Xóa Giỏ Hàng</span></button>
                                 </td>
                             </tr>
                           </tfoot>
